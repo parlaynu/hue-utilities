@@ -1,0 +1,13 @@
+# python
+pyenv/
+__pycache__/
+
+# keep config templates but ignore the rest
+**/configs/*yaml
+
+# for local work
+local/
+
+# system files
+.DS_Store
+
