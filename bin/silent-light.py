@@ -8,7 +8,7 @@ import hlib
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n', '--negate', help='negate the default silencing', action='store_true')
+    parser.add_argument('-n', '--negate', help='negate the silencing - always turn on', action='store_true')
     parser.add_argument('light_id', help='id of light to silence', type=str)
     args = parser.parse_args()
     

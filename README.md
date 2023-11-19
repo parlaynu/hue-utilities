@@ -130,7 +130,7 @@ when the power comes on shouldn't be exposed in the interface. After being woken
 the night, I have concluded that they've got that wrong. 
 
 Thankfully the 'stay off when the power comes back on no matter what' configuration is still available at the API level - this 
-utility sets it of the light you specify.
+utility sets it for the light you specify.
 
 Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
 
@@ -149,7 +149,7 @@ Listing the light's settings once this has been run will show the powerup config
 
 Test it by unplugging, waiting a few minutes and then plugging back in.
 
-To do the opposite, that is have the light always turn on 
+To do the opposite, that is have the light always turn on, run with the '--negate' flag.
 
 Enjoy your slumber!
 
