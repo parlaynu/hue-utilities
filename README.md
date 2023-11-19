@@ -13,9 +13,6 @@ still get caught out.
 The system uses zeroconf to locate the bridge - if your app can find the bridge on your network, then these
 utilties will as well.
 
-There are also some helper tools to register applications and create configuration files and also
-to list information about the bridge and the devices.
-
 You can read about Hue [here](https://www.philips-hue.com/).
 
 ## Getting Started
