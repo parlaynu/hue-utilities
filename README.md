@@ -5,7 +5,8 @@ into an influxdb time series database. It captures a wide range of events from t
 things like lights being turned on and off, motion detection from the motion sensors as well as temperature
 and ambient light levels.
 
-The system uses zeroconf to locate the bridge so it's about as easy to use as it can be.
+The system uses zeroconf to locate the bridge - if you app can find the bridge on your network, then these
+utilties will as well.
 
 There are also some helper tools to register applications and create configuration files and also
 to list information about the bridge and the devices.
@@ -188,22 +189,4 @@ The logger currently only logs 'temperature', 'light_level' and 'motion' events.
 other events can't be logged, I was just interested in these ones so didn't bother adding support for 
 other event types or even better, generalizing the code to handle any event type. On the todo list.
 
-
-## Helper Utilities
-
-The utilities all use zeroconf technologies to locate your bridge so there's no need to go
-hunting around for your bridge IP address. If the phone app can find the bridge on your network,
-then these utilities will as well.
-
-Bridge Info: Prints basic information about the bridge.
-
-    ./bin/bridge-info.py
-
-Init Application: Registers an application with the bridge and creates a config file for it.
-
-    ./bin/init-application.py <app_name> <app_instance>
-
-List Devices: Lists devices connected to the bridge:
-
-    ./bin/ls-devices.py config/<my-app-config>.yaml
 
