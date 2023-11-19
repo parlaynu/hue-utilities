@@ -29,9 +29,9 @@ class Client:
         full_url = f"https://{self._bridge.address}:{self._bridge.port}{url}"
         return self._session.get(full_url, headers=extra_headers, stream=stream, timeout=timeout)
     
-    def post(self, url, *, json=None, extra_headers=None):
-        full_url = f"https://{self._bridge}{url}"
-        return self._session.post(full_url, json=json)
+    def put(self, url, payload, *, extra_headers=None):
+        full_url = f"https://{self._bridge.address}:{self._bridge.port}{url}"
+        return self._session.put(full_url, data=payload)
     
     def close(self):
         self._session.close()

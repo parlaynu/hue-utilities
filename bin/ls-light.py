@@ -8,6 +8,7 @@ import hlib
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('config_file', help='configuration file to load', type=str)
+    parser.add_argument('light_id', help='id of light to query', type=str)
     args = parser.parse_args()
     
     bridge = hlib.find_bridge()
@@ -18,27 +19,19 @@ def main():
     cfg = hlib.load_config(args.config_file)
     cl = hlib.new_client(bridge, cfg['user_name'])
     
-    resp = cl.get("/clip/v2/resource/device")
+    url = f"/clip/v2/resource/light/{args.light_id}"
+        
+    resp = cl.get(url)
     if resp.status_code != 200:
         print(f"Request failed with {resp.status_code} {resp.reason}")
         return
     
     data = resp.json()
-    devices = data['data']
+    lights = data['data']
     
-    for idx, device in enumerate(devices):
-        if idx > 0:
-            print("")
-        print(f"Product: {device['product_data']['product_name']}")
-        print(f"  Model: {device['product_data']['model_id']}")
-        print(f"   Name: {device['metadata']['name']}")
-        print(f"     ID: {device['id']}")
-        
-        print("Services:")
-        for service in device['services']:
-            print(f"  - {service['rtype']}")
-            print(f"    {service['rid']}")
-
+    for light in lights:
+        pprint(light)
+    
 if __name__ == "__main__":
     main()
 
