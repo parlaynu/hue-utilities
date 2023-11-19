@@ -1,11 +1,16 @@
 # Philips Hue Lighting System - Utilities
 
-This repository is a system for listening to events from a Philips Hue bridge and logging those events
-into an influxdb time series database. It captures a wide range of events from the system including
-things like lights being turned on and off, motion detection from the motion sensors as well as temperature
-and ambient light levels.
+This repository has some utilities to help tame a hue lighting system. Apart from getting general information
+about your bridge and devices, it can do two things:
 
-The system uses zeroconf to locate the bridge - if you app can find the bridge on your network, then these
+* configure lights to remain off on poweron regardless of anything else
+* monitor the system for events and optionally log to an influxdb database
+
+The 'stay-off on poweron no matter what' configuration seems to have disappeared from the app. At least, I can't get it to
+work so I wrote the 'silent-light.py' tool to do it via the API. Note that this might change on updates so you might
+still get caught out.
+
+The system uses zeroconf to locate the bridge - if your app can find the bridge on your network, then these
 utilties will as well.
 
 There are also some helper tools to register applications and create configuration files and also
