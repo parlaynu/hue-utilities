@@ -130,7 +130,7 @@ utility sets it of the light you specify.
 
 Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
 
-    $ ./bin/silent-light.py configs/watcher-dev.yaml 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+    $ ./bin/silent-light.py configs/config.yaml 7d12ae2a-dad7-4564-833c-386f4b3f0e57
 
 Listing the light's settings once this has been run will show the powerup configuration to be off:
 
