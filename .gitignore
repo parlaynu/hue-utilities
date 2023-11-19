@@ -4,6 +4,7 @@ __pycache__/
 
 # keep config templates but ignore the rest
 **/configs/*yaml
+**/resources/*yaml
 
 # for local work
 local/

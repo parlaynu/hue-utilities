@@ -27,9 +27,10 @@ Setup python environment:
 
 Register an application and create configuration:
 
-    ./bin/init-application.py <app_name> <app_instance>
+    ./bin/init-application.py [-n <app-name>] [-i <app-instance>]
 
-This creates a configuration file in the `configs` directory that the other tools can use.
+This creates a configuration file in the `hlib.resources` directory that the other tools automatically find and use.
+It uses a default application name with unique instance name if not provided.
 
 ## Utilities
 
@@ -57,7 +58,7 @@ This one is very simple. You don't need this info to run any of the other utilit
 
 This prints out all the devices on your bridge and the services they offer:
 
-    $ ./bin/ls-devices.py configs/config.yaml 
+    $ ./bin/ls-devices.py
     
     Product: Hue ambiance candle
       Model: LTW012
@@ -89,7 +90,7 @@ This prints out all the devices on your bridge and the services they offer:
 
 This lists details of a light. Used the UUID from the light service listed in ls-devices.
 
-    $ ./bin/ls-light.py configs/config.yaml 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+    $ ./bin/ls-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
     {'alert': {'action_values': ['breathe']},
      'color_temperature': {'mirek': 443,
                            'mirek_schema': {'mirek_maximum': 454,
@@ -133,11 +134,11 @@ utility sets it of the light you specify.
 
 Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
 
-    $ ./bin/silent-light.py configs/config.yaml 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+    $ ./bin/silent-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
 
 Listing the light's settings once this has been run will show the powerup configuration to be off:
 
-    $ ./bin/ls-light.py configs/config.yaml 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+    $ ./bin/ls-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
     {...
      'powerup': {'color': {'mode': 'previous'},
                  'configured': True,
@@ -148,6 +149,8 @@ Listing the light's settings once this has been run will show the powerup config
 
 Test it by unplugging, waiting a few minutes and then plugging back in.
 
+To do the opposite, that is have the light always turn on 
+
 Enjoy your slumber!
 
 ## Event Listener
@@ -155,11 +158,11 @@ Enjoy your slumber!
 The event listener uses the event stream interface on the bridge. To listen to all events, run
 this:
 
-    ./bin/event-listener.py configs/<my-app-config>.yaml
+    ./bin/event-listener.py
 
 To filter the events so you only see motion and temperature events, run the command like this:
 
-    ./bin/event-listener.py configs/<my-app-config>.yaml motion temperature
+    ./bin/event-listener.py motion temperature
   
 This checks the 'type' field in the event data for an exact match. If you run the listener for a while
 with no filter and you will see the range that's possible.
@@ -183,7 +186,7 @@ To run the event capture with logging, run a command like this:
     export IDB_BUCKET="influxdb-bucket-to-log-to"
     export IDB_URL="http://<your-influxdb-host>:8086"
 
-    ./bin/event-listener.py configs/myconfig.yaml temperature motion light_level | ./bin/event-logger.py
+    ./bin/event-listener.py temperature motion light_level | ./bin/event-logger.py
 
 You'll start seeing events arriving in InfluxDB.
 

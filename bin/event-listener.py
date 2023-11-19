@@ -91,11 +91,10 @@ def run(client, types):
     
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("config_file", help="configuration file to load", type=str)
     parser.add_argument("types", help="event types to filter for", type=str, nargs='*', default=None)
     args = parser.parse_args()
     
-    cfg = hlib.load_config(args.config_file)
+    cfg = hlib.load_config()
 
     bridge = hlib.find_bridge()
     if bridge is None:

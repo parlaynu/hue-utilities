@@ -8,7 +8,7 @@ import hlib
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_file', help='configuration file to load', type=str)
+    parser.add_argument('-n', '--negate', help='negate the default silencing', action='store_true')
     parser.add_argument('light_id', help='id of light to silence', type=str)
     args = parser.parse_args()
     
@@ -17,20 +17,21 @@ def main():
         print("Error: failed to locate a bridge")
         return
     
-    cfg = hlib.load_config(args.config_file)
+    cfg = hlib.load_config()
     cl = hlib.new_client(bridge, cfg['user_name'])
     
     url = f"/clip/v2/resource/light/{args.light_id}"
     
+    turn_on = True if args.negate else False
     payload = {
         'powerup': {
             'preset': 'custom',
-            'on': { 'mode': 'on', 'on': {'on': False }},
+            'on': { 'mode': 'on', 'on': {'on': turn_on }},
             'dimming': { 'mode': 'previous' },
             'color': { 'mode': 'previous' }
         }
     }
-    payload = json.dumps(payload)
+    # payload = json.dumps(payload)
         
     resp = cl.put(url, payload)
     if resp.status_code != 200:

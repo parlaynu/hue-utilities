@@ -1,21 +1,14 @@
 #!/usr/bin/env python3
-import argparse
-from pprint import pprint
-
 import hlib
 
 
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument('config_file', help='configuration file to load', type=str)
-    args = parser.parse_args()
-    
     bridge = hlib.find_bridge()
     if bridge is None:
         print("Error: failed to locate a bridge")
         return
     
-    cfg = hlib.load_config(args.config_file)
+    cfg = hlib.load_config()
     cl = hlib.new_client(bridge, cfg['user_name'])
     
     resp = cl.get("/clip/v2/resource/device")

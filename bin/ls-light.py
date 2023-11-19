@@ -7,7 +7,6 @@ import hlib
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('config_file', help='configuration file to load', type=str)
     parser.add_argument('light_id', help='id of light to query', type=str)
     args = parser.parse_args()
     
@@ -16,7 +15,7 @@ def main():
         print("Error: failed to locate a bridge")
         return
     
-    cfg = hlib.load_config(args.config_file)
+    cfg = hlib.load_config()
     cl = hlib.new_client(bridge, cfg['user_name'])
     
     url = f"/clip/v2/resource/light/{args.light_id}"
