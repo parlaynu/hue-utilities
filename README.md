@@ -30,12 +30,13 @@ It uses a default application name with unique instance name if not provided.
 
 ## Utilities
 
-| Utility         | Description                                                   |
-| --------------- | ------------------------------------------------------------- |
-| bridge-info.py  | find your bridge and pring some info about it                 |
-| ls-devices.py   | list all devices attached to your bridge                      |
-| ls-light.py     | print full configuration of the light                         |
-| silent-light.py | configure your light to stay off when the power comes back on |
+| Utility         | Description                                                      |
+| --------------- | ---------------------------------------------------------------- |
+| bridge-info.py  | find your bridge and pring some info about it                    |
+| ls-devices.py   | list all devices attached to your bridge                         |
+| ls-light.py     | print full configuration of the light                            |
+| silent-light.py | configure your light to stay off when the power comes back on    |
+| check-silent.py | verify lights are configured to be silent; pushover notification |
 
 ### Bridge Info
 
