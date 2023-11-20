@@ -147,7 +147,39 @@ Test it by unplugging, waiting a few minutes and then plugging back in.
 
 To do the opposite, that is have the light always turn on, run with the '--negate' flag.
 
+Note that this has worked correctly in all the testing I have done, but it's possible there is some scenario
+that I haven't thought of where this doesn't work. Seems pretty solid though.
+
+Also, it could be possible for a software update to overwrite this setting, so you'll need to keep an eye on it.
+
 Enjoy your slumber!
+
+### Checking Silent Status
+
+To verify that your lights are still in silent mode, you can use the check-silent.py application:
+
+    $ ./check-silent.py -h
+    usage: check-silent.py [-h] light_id [light_id ...]
+    
+    positional arguments:
+      light_id    id of light to check
+
+For example:
+
+    $ ./check-silent.py fc513d4a-2b9b-4cc5-b0a7-38e4812949a1 c8dba9da-9b15-44f0-8888-0a4a72c3620a
+    fc513d4a-2b9b-4cc5-b0a7-38e4812949a1: name: Light1, configured: True
+    c8dba9da-9b15-44f0-8888-0a4a72c3620a: name: Light2, configured: True
+
+This can also optionally send notifications to you using the pushover APP. To configure this, edit the configuration file
+in 'hlib/resources/config.yaml' and add these entries:
+
+    pushover_token: application-token
+    pushover_clients:
+    - client-key
+
+To create your application and find your client key, refer to the [pushover API documentation](https://pushover.net/api).
+
+I run this as a cron job on a raspberry pi.
 
 ## Event Listener
 
