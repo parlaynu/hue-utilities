@@ -168,8 +168,8 @@ To verify that your lights are still in silent mode, you can use the check-silen
 For example:
 
     $ ./check-silent.py fc513d4a-2b9b-4cc5-b0a7-38e4812949a1 c8dba9da-9b15-44f0-8888-0a4a72c3620a
-    fc513d4a-2b9b-4cc5-b0a7-38e4812949a1: name: Light1, configured: True
-    c8dba9da-9b15-44f0-8888-0a4a72c3620a: name: Light2, configured: True
+    fc513d4a-2b9b-4cc5-b0a7-38e4812949a1: name: Light1, silent: True
+    c8dba9da-9b15-44f0-8888-0a4a72c3620a: name: Light2, silent: True
 
 This can also optionally send notifications to you using the pushover APP. To configure this, edit the configuration file
 in 'hlib/resources/config.yaml' and add these entries:

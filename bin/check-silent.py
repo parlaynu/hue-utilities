@@ -41,10 +41,10 @@ def main():
     green = {}
     red = {}
     for light_id in args.light_id:
-        light_name, configured = check_light(cl, light_id)
-        print(f'{light_id}: name: {light_name}, configured: {configured}')
+        light_name, silent = check_light(cl, light_id)
+        print(f'{light_id}: name: {light_name}, silent: {silent}')
         
-        if configured:
+        if silent:
             green[light_id] = light_name
         else:
             red[light_id] = light_name
@@ -70,7 +70,7 @@ def main():
             title = "GREEN: correctly configured lights"
         
         message = "\n".join(messages)
-        hlib.send_message(token, clients, message)
+        hlib.send_message(token, clients, message, title)
 
 
 if __name__ == "__main__":
