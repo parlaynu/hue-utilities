@@ -1,14 +1,10 @@
 # Philips Hue Lighting System - Utilities
 
-This repository has some utilities to help tame a hue lighting system. Apart from getting general information
-about your bridge and devices, it can do two things:
+This repository has some utilities to help configure and monitor a hue lighting system. Apart from getting general information
+about your bridge and devices, it has tools to:
 
-* configure lights to remain off on poweron regardless of anything else
+* configure lights to remain off on poweron no matter what
 * monitor the system for events and optionally log to an influxdb database
-
-The 'stay-off on poweron no matter what' configuration seems to have disappeared from the app. At least, I can't get it to
-work so I wrote the 'silent-light.py' tool to do it via the API. Note that this might change on updates so you might
-still get caught out.
 
 The system uses zeroconf to locate the bridge - if your app can find the bridge on your network, then these
 utilties will as well.
@@ -125,12 +121,12 @@ This lists details of a light. Used the UUID from the light service listed in ls
 
 ### Silent Light
 
-It seems that the hue app developers have decided that having the option of forcing the light to remain off
-when the power comes on shouldn't be exposed in the interface. After being woken up a few times in the middle of
-the night, I have concluded that they've got that wrong. 
+It seems that the hue app developers have removed the option of forcing the light to remain off when the power comes 
+on from the iOS app. Not sure why, but after being woken up a few times in the middle of the night, I have concluded 
+that this is pretty important.
 
-Thankfully the 'stay off when the power comes back on no matter what' configuration is still available at the API level - this 
-utility sets it for the light you specify.
+Thankfully the 'stay off when the power comes back on no matter what' configuration seems to still be accessible at the 
+API level - this utility sets it for the light you specify.
 
 Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
 
