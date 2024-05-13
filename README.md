@@ -1,12 +1,8 @@
 # Philips Hue Lighting System - Utilities
 
-This repository has some utilities to help configure and monitor a hue lighting system. Apart from getting general information
-about your bridge and devices, it has tools to:
+This repository has some utilities to query and monitor a hue lighting system.
 
-* configure lights to remain off on poweron no matter what
-* monitor the system for events and optionally log to an influxdb database
-
-The system uses zeroconf to locate the bridge - if your app can find the bridge on your network, then these
+It uses zeroconf to locate the bridge - if your app can find the bridge on your network, then these
 utilties will as well.
 
 You can read about Hue [here](https://www.philips-hue.com/).
@@ -30,13 +26,15 @@ It uses a default application name with unique instance name if not provided.
 
 ## Utilities
 
-| Utility         | Description                                                      |
-| --------------- | ---------------------------------------------------------------- |
-| bridge-info.py  | find your bridge and pring some info about it                    |
-| ls-devices.py   | list all devices attached to your bridge                         |
-| ls-light.py     | print full configuration of the light                            |
-| silent-light.py | configure your light to stay off when the power comes back on    |
-| check-silent.py | verify lights are configured to be silent; pushover notification |
+| Utility           | Description                                                       |
+| ----------------- | ----------------------------------------------------------------- |
+| bridge-info.py    | find your bridge and pring some info about it                     |
+| ls-devices.py     | list all devices attached to your bridge                          |
+| ls-light.py       | print full configuration of the light                             |
+| event-listener.py | listens to your bridge for events and output to stdout            |
+| event-logger.py   | receive events from the listener and log to an influxdb database  |
+| silent-light.py   | attempts to configure your light to stay off after a power outage |
+| check-silent.py   | verify lights are configured to be silent; pushover notification  |
 
 ### Bridge Info
 
@@ -82,7 +80,6 @@ This prints out all the devices on your bridge and the services they offer:
         2c4b1320-22d9-4bad-9fa7-298bd17927ac
         
 
-
 ### List Light
 
 This lists details of a light. Used the UUID from the light service listed in ls-devices.
@@ -119,68 +116,6 @@ This lists details of a light. Used the UUID from the light service listed in ls
      'signaling': {'signal_values': ['no_signal', 'on_off']},
      'type': 'light'}
 
-
-### Silent Light
-
-It seems that the hue app developers have removed the option of forcing the light to remain off when the power comes 
-on from the iOS app. Not sure why, but after being woken up a few times in the middle of the night, I have concluded 
-that this is pretty important.
-
-Thankfully the 'stay off when the power comes back on no matter what' configuration seems to still be accessible at the 
-API level - this utility sets it for the light you specify.
-
-Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
-
-    $ ./bin/silent-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
-
-Listing the light's settings once this has been run will show the powerup configuration to be off:
-
-    $ ./bin/ls-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
-    {...
-     'powerup': {'color': {'mode': 'previous'},
-                 'configured': True,
-                 'dimming': {'mode': 'previous'},
-                 'on': {'mode': 'on', 'on': {'on': False}},
-                 'preset': 'custom'},
-      ... }
-
-Test it by unplugging, waiting a few minutes and then plugging back in.
-
-To do the opposite, that is have the light always turn on, run with the '--negate' flag.
-
-Note that this has worked correctly in all the testing I have done, but it's possible there is some scenario
-that I haven't thought of where this doesn't work. Seems pretty solid though.
-
-Also, it could be possible for a software update to overwrite this setting, so you'll need to keep an eye on it.
-
-Enjoy your slumber!
-
-### Checking Silent Status
-
-To verify that your lights are still in silent mode, you can use the check-silent.py application:
-
-    $ ./check-silent.py -h
-    usage: check-silent.py [-h] light_id [light_id ...]
-    
-    positional arguments:
-      light_id    id of light to check
-
-For example:
-
-    $ ./check-silent.py fc513d4a-2b9b-4cc5-b0a7-38e4812949a1 c8dba9da-9b15-44f0-8888-0a4a72c3620a
-    fc513d4a-2b9b-4cc5-b0a7-38e4812949a1: name: Light1, silent: True
-    c8dba9da-9b15-44f0-8888-0a4a72c3620a: name: Light2, silent: True
-
-This can also optionally send notifications to you using the pushover APP. To configure this, edit the configuration file
-in 'hlib/resources/config.yaml' and add these entries:
-
-    pushover_token: application-token
-    pushover_clients:
-    - client-key
-
-To create your application and find your client key, refer to the [pushover API documentation](https://pushover.net/api).
-
-I run this as a cron job on a raspberry pi.
 
 ## Event Listener
 
@@ -223,4 +158,59 @@ The logger currently only logs 'temperature', 'light_level' and 'motion' events.
 other events can't be logged, I was just interested in these ones so didn't bother adding support for 
 other event types or even better, generalizing the code to handle any event type. On the todo list.
 
+### Silent Light
+
+I've had a few issues after power outages where the lights come on. This is normally OK except for when 
+it happens in the middle of the night in the bedroom. From memory, there used to be a setting accessible 
+from the app to control this, but I can't find it anymore. There is an option still available in the API 
+though which this utility uses to configure the option.
+
+It works in a lot of situations I've tested, however, if the power if off for an extended period of time, 
+then they still come on with the power.
+
+Once you have the light's id from the 'ls-devices.py' tool, you can run it like this:
+
+    $ ./bin/silent-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+
+Listing the light's settings once this has been run will show the powerup configuration to be off:
+
+    $ ./bin/ls-light.py 7d12ae2a-dad7-4564-833c-386f4b3f0e57
+    {...
+     'powerup': {'color': {'mode': 'previous'},
+                 'configured': True,
+                 'dimming': {'mode': 'previous'},
+                 'on': {'mode': 'on', 'on': {'on': False}},
+                 'preset': 'custom'},
+      ... }
+
+Test it by unplugging, waiting a few minutes and then plugging back in.
+
+To do the opposite, that is have the light always turn on, run with the '--negate' flag.
+
+### Checking Silent Status
+
+To verify that your lights are still in silent mode, you can use the check-silent.py application:
+
+    $ ./check-silent.py -h
+    usage: check-silent.py [-h] light_id [light_id ...]
+    
+    positional arguments:
+      light_id    id of light to check
+
+For example:
+
+    $ ./check-silent.py fc513d4a-2b9b-4cc5-b0a7-38e4812949a1 c8dba9da-9b15-44f0-8888-0a4a72c3620a
+    fc513d4a-2b9b-4cc5-b0a7-38e4812949a1: name: Light1, silent: True
+    c8dba9da-9b15-44f0-8888-0a4a72c3620a: name: Light2, silent: True
+
+This can also optionally send notifications to you using the pushover APP. To configure this, edit the configuration file
+in 'hlib/resources/config.yaml' and add these entries:
+
+    pushover_token: application-token
+    pushover_clients:
+    - client-key
+
+To create your application and find your client key, refer to the [pushover API documentation](https://pushover.net/api).
+
+I run this as a cron job on a raspberry pi.
 
