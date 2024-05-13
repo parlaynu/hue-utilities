@@ -48,6 +48,8 @@ This one is very simple. You don't need this info to run any of the other utilit
     Addresses: 192.168.1.111
          Port: 443
 
+If you don't get a response but the app on your mobile device works, it's probably your firewall blocking
+the response. 
 
 ### List Devices
 

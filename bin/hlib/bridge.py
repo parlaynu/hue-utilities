@@ -41,10 +41,12 @@ class Bridge:
 def find_bridge():
     zeroconf = Zeroconf()
 
+    # create a semaphore to signal from listener thread
     sem = threading.Semaphore(value=0)
     listener = MyListener(sem)
     browser = ServiceBrowser(zeroconf, "_hue._tcp.local.", listener)
 
+    # wait on the semaphore
     success = True
     if sem.acquire(timeout=10) == False:
         success = False

@@ -42,7 +42,7 @@ class Client:
 
 
 def new_client(bridge, user_name=None):
-    cacertfile = files("hlib.resources").joinpath("ca.pem")
+    cacertfile = files("hlib.resources").joinpath("hue_bridge_cacert.pem")
     
     cl = Client(bridge, user_name, cacertfile)
     
