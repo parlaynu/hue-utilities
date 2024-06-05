@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
+import argparse
 import hlib
 
 
 def main():
-    bridge = hlib.find_bridge()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
+    args = parser.parse_args()
+
+    bridge = hlib.find_bridge(args.addr)
     if bridge is None:
         print("Error: failed to locate a bridge")
         return

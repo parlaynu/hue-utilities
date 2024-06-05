@@ -38,13 +38,14 @@ class Bridge:
         self.address = self.addresses[0]
 
 
-def find_bridge():
-    zeroconf = Zeroconf()
+def find_bridge(ip_addr=None):
+    unicast = False if ip_addr is None else True
+    zeroconf = Zeroconf(unicast=unicast)
 
     # create a semaphore to signal from listener thread
     sem = threading.Semaphore(value=0)
     listener = MyListener(sem)
-    browser = ServiceBrowser(zeroconf, "_hue._tcp.local.", listener)
+    browser = ServiceBrowser(zeroconf, "_hue._tcp.local.", listener, addr=ip_addr)
 
     # wait on the semaphore
     success = True

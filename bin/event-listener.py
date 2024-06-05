@@ -91,12 +91,13 @@ def run(client, types):
     
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
     parser.add_argument("types", help="event types to filter for", type=str, nargs='*', default=None)
     args = parser.parse_args()
     
     cfg = hlib.load_config()
 
-    bridge = hlib.find_bridge()
+    bridge = hlib.find_bridge(args.addr)
     if bridge is None:
         print("Error: failed to locate a bridge")
         return

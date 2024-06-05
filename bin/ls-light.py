@@ -7,10 +7,11 @@ import hlib
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
     parser.add_argument('light_id', help='id of light to query', type=str)
     args = parser.parse_args()
     
-    bridge = hlib.find_bridge()
+    bridge = hlib.find_bridge(args.addr)
     if bridge is None:
         print("Error: failed to locate a bridge")
         return
