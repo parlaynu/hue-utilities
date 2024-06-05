@@ -28,6 +28,7 @@ def check_light(cl, light_id):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
+    parser.add_argument('--always', help='send notification always; defaults to only if red lights', action='store_true')
     parser.add_argument('light_id', help='id of light to check', type=str, nargs='+')
     args = parser.parse_args()
     
@@ -53,7 +54,7 @@ def main():
     # check for pushover configuratin
     token = cfg.get('pushover_token', None)
     clients = cfg.get('pushover_clients', None)
-    if token and clients:
+    if token and clients and (args.always or len(red) > 0):
         messages = []
         if len(red):
             messages.append("RED: incorrectly configured lights")
