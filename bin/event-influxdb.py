@@ -7,7 +7,7 @@ from datetime import datetime
 import requests
 
 import hlib
-from hops import listener, event_filter, syslogger
+from hops import listener, event_filter, sustainer, influxdb_logger
 
 
 def main():
@@ -36,7 +36,8 @@ def main():
             pipe = listener(client)
             if len(args.types) > 0:
                 pipe = event_filter(pipe, args.types)
-            pipe = syslogger(pipe)
+            pipe = sustainer(pipe)
+            pipe = influxdb_logger(pipe)
             
             # run the pipeline
             for item in pipe:

@@ -40,6 +40,30 @@ class Client:
     def close(self):
         self._session.close()
 
+    def get_devices(self):
+        resp = self.get("/clip/v2/resource/device")
+        if resp.status_code != 200:
+            raise RuntimeError(f"Response {resp.status_code}: {resp.reason}")
+    
+        data = resp.json()
+        raw_devices = data['data']
+        
+        devices = {}
+    
+        for d in raw_devices:
+            top_id = d['id']
+        
+            device = {
+                'id': top_id,
+                'type': d['type'],
+                'product': d['product_data']['product_name'],
+                'archtype': d['metadata']['archetype'],
+                'name': d['metadata']['name'],
+            }
+            devices[top_id] = device
+        
+        return devices
+
 
 def new_client(bridge, user_name=None):
     cacertfile = files("hlib.resources").joinpath("hue_bridge_cacert.pem")
