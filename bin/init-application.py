@@ -49,7 +49,7 @@ def save_config(bridge, app_name, app_instance, user_name, client_key):
 def main():
     # parse command line
     parser = argparse.ArgumentParser()
-    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
+    parser.add_argument('--bridge', help='ip address of the bridge', type=str, default=None)
     parser.add_argument('-n', '--name', help='name of your application', type=str, default=None)
     parser.add_argument('-i', '--instance', help='name the instance', type=str, default=None)
     args = parser.parse_args()
@@ -60,7 +60,7 @@ def main():
         args.instance = ''.join(random.choice(string.ascii_lowercase) for i in range(10))
     
     # get the bridge address
-    bridge = hlib.find_bridge(args.addr)
+    bridge = hlib.find_bridge(args.bridge)
     if bridge is None:
         print("Error: failed to locate a bridge")
         return

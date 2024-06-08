@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 import argparse
-from hlib import find_bridge
+import hlib
 
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
+    parser.add_argument('--bridge', help='ip address of the bridge', type=str, default=None)
     args = parser.parse_args()
 
-    bridge = find_bridge(args.addr)
+    cfg = hlib.load_config()
+    if args.bridge is not None:
+        cfg['bridge'] = args.bridge
+
+    bridge = hlib.find_bridge(cfg['bridge'])
     if bridge is None:
         print("Error: failed to locate a bridge")
         return

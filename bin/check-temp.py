@@ -52,16 +52,19 @@ def check_temp(cl, device_id):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--addr', help='ip address of the bridge', type=str, default=None)
+    parser.add_argument('--bridge', help='ip address of the bridge', type=str, default=None)
     parser.add_argument('device_id', help='id of the device to query', type=str, nargs='+')
     args = parser.parse_args()
     
-    bridge = hlib.find_bridge(args.addr)
+    cfg = hlib.load_config()
+    if args.bridge is not None:
+        cfg['bridge'] = args.bridge
+
+    bridge = hlib.find_bridge(cfg['bridge'])
     if bridge is None:
         print("Error: failed to locate a bridge")
         return
     
-    cfg = hlib.load_config()
     cl = hlib.new_client(bridge, cfg['user_name'])
     
     print("Temperatures:")
