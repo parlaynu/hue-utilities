@@ -1,14 +1,14 @@
 
 
 
-def event_filter(pipe, types):
+def event_filter(pipe, *, types=[]):
     
-    types = set(types)
+    types = { t.lower() for t in types }
 
     def gen():
         for item in pipe:
-            dtype = item['type']
-            if len(types) > 0 and dtype not in types:
+            etype = item['type']
+            if len(types) > 0 and etype not in types:
                 continue
             yield item
 

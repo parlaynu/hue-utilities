@@ -35,7 +35,7 @@ def main():
             client = hlib.new_client(bridge, cfg['user_name'])
             pipe = listener(client)
             if len(args.types) > 0:
-                pipe = event_filter(pipe, args.types)
+                pipe = event_filter(pipe, types=args.types)
             pipe = printer(pipe)
             
             # run the pipeline

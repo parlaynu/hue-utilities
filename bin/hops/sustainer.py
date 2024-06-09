@@ -6,18 +6,24 @@ resends the event if more than 2 minutes has elapsed.
 import time
 
 
-def sustainer(inp):
+def sustainer(pipe, *, types=[]):
+    
+    types = { t.lower() for t in types }
     
     def gen():
         cache = {}
     
-        for item in inp:
+        for item in pipe:
             now = time.time()
 
             # if it's a valid item, cache it and yield it
             if iid := item.get('id', None):
-                cache[iid] = (now, item)
                 yield item
+                
+                # if it's a type to sustain, enter it into the cache
+                etype = item['type']
+                if len(types) == 0 or etype in types:
+                    cache[iid] = (now, item)
 
             # check the cache for older items
             for k, v in cache.items():
