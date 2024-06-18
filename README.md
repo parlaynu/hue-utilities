@@ -181,7 +181,7 @@ but if you want to:
     systemctl restart logrotate
 
 
-## Logging Events To InfluxDB
+## InfluxDB Logger
 
 To log to an InfluxDB, you need to setup the account and permissions as environment variables and 
 
