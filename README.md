@@ -134,14 +134,14 @@ is the default on your system. See the next sections for different logging optio
 
 ### Forwarding Logs to Remote System
 
-To configure the local system to forward `local0` events to the remote system, edit the configuration file
-`/etc/rsyslog.conf` and add the line below:
+To configure the local system to forward `local0` events to a remote system, edit the configuration file
+`/etc/rsyslog.conf` and add the line below, changing the `X.X.X.X` to the IP address of the remote system:
 
     local0.*  action(type="omfwd" target="X.X.X.X" port="514" protocol="udp"
                 action.resumeRetryCount="100"
                 queue.type="linkedList" queue.size="10000")
 
-Then update the '*.*' entry to not log any `local0` events to the default syslog file:
+Then update the default entry to not log any `local0` events to the default syslog file:
 
     *.*;auth,authpriv,local0.none   -/var/log/syslog
 
@@ -156,7 +156,7 @@ You can then setup logging on the remote system as in the section below.
 There are two configuration changes that need to be made:
 
 1. direct `local0` facility events to their own log file
-2. stop the events being sent to the default log file
+2. stop `local0` events being sent to the default log file
 
 Edit the file `/etc/rsyslog.conf` and add the first line below and make the
 changes to the second line:
