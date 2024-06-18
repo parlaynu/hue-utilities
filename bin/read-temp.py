@@ -77,29 +77,6 @@ def main():
             print(f"{idx:02d} {temp}")
         else:
             print(f"{idx:02d} {temp} at {device_name}")
-    
-    # check for pushover configuratin
-    # token = cfg.get('pushover_token', None)
-    # clients = cfg.get('pushover_clients', None)
-    # if token and clients:
-    #     messages = []
-    #     if len(red):
-    #         messages.append("RED: incorrectly configured lights")
-    #         for light_id, light_name in red.items():
-    #             messages.append(f"  - {light_id} {light_name}")
-    #
-    #     if len(green):
-    #         messages.append("GREEN: correctly configured lights")
-    #         for light_id, light_name in green.items():
-    #             messages.append(f"  - {light_id} {light_name}")
-    #
-    #     if len(red):
-    #         title = "RED: incorrectly configured lights"
-    #     else:
-    #         title = "GREEN: correctly configured lights"
-    #
-    #     message = "\n".join(messages)
-    #     hlib.send_message(token, clients, message, title)
 
 
 if __name__ == "__main__":

@@ -7,6 +7,7 @@ utilties will as well.
 
 You can read about Hue [here](https://www.philips-hue.com/).
 
+
 ## Getting Started
 
 This section describes how to get started with listening for events.
@@ -24,6 +25,7 @@ Register an application and create configuration:
 This creates a configuration file in the `hlib.resources` directory that the other tools automatically find and use.
 It uses a default application name with unique instance name if not provided.
 
+
 ## Utilities
 
 | Utility           | Description                                                       |
@@ -31,8 +33,10 @@ It uses a default application name with unique instance name if not provided.
 | bridge-info.py    | find your bridge and pring some info about it                     |
 | ls-devices.py     | list all devices attached to your bridge                          |
 | ls-light.py       | print full configuration of the light                             |
-| event-listener.py | listens to your bridge for events and output to stdout            |
-| event-logger.py   | receive events from the listener and log to an influxdb database  |
+| ls-resource.py    | print information about any type of resource                      |
+| event-syslog.py   | log events to the system syslog facility                          |
+| event-influxdb.py | log to an influxdb database                                       |
+| read-temp.py      | reads the temperature from a devices that records temperature     |
 | silent-light.py   | attempts to configure your light to stay off after a power outage |
 | check-silent.py   | verify lights are configured to be silent; pushover notification  |
 
@@ -119,48 +123,85 @@ This lists details of a light. Used the UUID from the light service listed in ls
      'type': 'light'}
 
 
-## Event Listener
+## Syslog Logger
 
-The event listener uses the event stream interface on the bridge. To listen to all events, run
-this:
+To run the syslogger, use this command:
 
-    ./bin/event-listener.py
+    $ ./event-syslog.py motion temperature light_level
 
-To filter the events so you only see motion and temperature events, run the command like this:
+Depending on the setup of your rsyslog, this will write events to `/var/log/syslog` or whatever
+is the default on your system. See the next sections for different logging options.
 
-    ./bin/event-listener.py motion temperature
-  
-This checks the 'type' field in the event data for an exact match. If you run the listener for a while
-with no filter and you will see the range that's possible.
+### Forwarding Logs to Remote System
+
+To configure the local system to forward `local0` events to the remote system, edit the configuration file
+`/etc/rsyslog.conf` and add the line below:
+
+    local0.*  action(type="omfwd" target="X.X.X.X" port="514" protocol="udp"
+                action.resumeRetryCount="100"
+                queue.type="linkedList" queue.size="10000")
+
+Then update the '*.*' entry to not log any `local0` events to the default syslog file:
+
+    *.*;auth,authpriv,local0.none   -/var/log/syslog
+
+Restart and the events will be forwarded:
+
+    systemctl restart rsyslog
+
+You can then setup logging on the remote system as in the section below.
+
+###  Logging to Separate File
+
+There are two configuration changes that need to be made:
+
+1. direct `local0` facility events to their own log file
+2. stop the events being sent to the default log file
+
+Edit the file `/etc/rsyslog.conf` and add the first line below and make the
+changes to the second line:
+
+    local0.*                        /var/log/hue-events.log
+    *.*;auth,authpriv,local0.none   -/var/log/syslog
+
+Restart `rsyslog` and all should work:
+
+    systemctl restart rsyslog
+
+
+### Log Rotation
+
+To setup log rotation, edit the file `/etc/logrotate.d/rsyslog` and add the file
+`/var/log/hue-events.log` to the list of log files to rotate - just make it match all
+the others.
+
+I don't think the service needs to be restarted as it is run periodically on a timer,
+but if you want to:
+
+    systemctl restart logrotate
 
 
 ## Logging Events To InfluxDB
 
-The utility `event-logger.py` can be used with `event-listener.py` to log events to an InfluxDB database.
-
-Information about InfluxDB can be found [here](https://docs.influxdata.com/influxdb/v2.6/get-started/).
-To install OpenSource InfluxDB 2.x, follow the instructions on their download portal
-[here](https://portal.influxdata.com/downloads/).
-
-The utility `event-logger.py` uses the InfluxData python client library. You can read about
-it [here](https://docs.influxdata.com/influxdb/v2.0/api-guide/client-libraries/python/).
-
-To run the event capture with logging, run a command like this:
+To log to an InfluxDB, you need to setup the account and permissions as environment variables and 
 
     export IDB_TOKEN="influxdb-access-token"
     export IDB_ORG="influxdb-org-name"
     export IDB_BUCKET="influxdb-bucket-to-log-to"
     export IDB_URL="http://<your-influxdb-host>:8086"
 
-    ./bin/event-listener.py temperature motion light_level | ./bin/event-logger.py
-
-You'll start seeing events arriving in InfluxDB.
+    ./bin/event-influxdb.py motion temperature light_level
 
 The logger currently only logs 'temperature', 'light_level' and 'motion' events. There's no reason why
 other events can't be logged, I was just interested in these ones so didn't bother adding support for 
 other event types or even better, generalizing the code to handle any event type. On the todo list.
 
-### Silent Light
+Information about InfluxDB can be found [here](https://docs.influxdata.com/influxdb/v2.6/get-started/).
+To install OpenSource InfluxDB 2.x, follow the instructions on their download portal
+[here](https://portal.influxdata.com/downloads/).
+
+
+## Silent Light
 
 I've had a few issues after power outages where the lights come on. This is normally OK except for when 
 it happens in the middle of the night in the bedroom. From memory, there used to be a setting accessible 
